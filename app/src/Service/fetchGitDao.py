@@ -1,30 +1,38 @@
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 import os
 import json 
 from flask import jsonify, abort
 import logging
 import requests
 from pathlib import Path
+from app.src.model.profile_model import Profile
 
+load_dotenv()
 
-def getGitData(reponame):
-    url_git ='https://api.github.com/orgs/'+reponame + '/repos'
+class GitHubService:
+    def __init__(self, reponame):
+        self.reponame = reponame
+
+    def getGitData(self):
+        api_url = os.environ.get('GITHUB_API_URL')
+        url_git ='https://api.github.com/orgs/'+self.reponame + '/repos'
+        pm = Profile()
+        response = requests.get(url_git)
+        data = response.json()
+        print('Data:', data)
+        if response.status_code == 200:
+            pm.languages = []
+            
+            watchers = [entry['watchers_count'] for entry in data if entry['visibility'] == 'public']
+            pm.watcherscount += len(watchers)
+            pm.public_repos_orig = [{'repo_name':entry['name'], 'public_url': entry['html_url'], 'is_fork':entry['fork']} for entry in data if entry['visibility'] == 'public' and entry['fork'] == False]
+            pm.public_repos_forked = [{'repo_name':entry['name'], 'public_url': entry['html_url'], 'is_fork':entry['fork']} for entry in data if entry['visibility'] == 'public' and entry['fork'] == True]
+            pm.languages = [entry['language'] for entry in data]
+            git_repo_topics = []
+            git_repo_topics_1 = [git_repo_topics.extend(entry['topics']) for entry in data]
+            pm.repotopics = git_repo_topics
+            return pm
+        else:
+            abort(response.status_code,response.text)
     
-    response = requests.get(url_git)
-    data = response.json()
-    print('Data:', data)
-    if response.status_code == 200:
-        git_repo_languages = []
-        git_watchers_count = [entry['watchers_count'] for entry in data if entry['visibility'] == 'public']
-        git_repo_original_lst = [{'repo_name':entry['name'], 'public_url': entry['html_url'], 'is_fork':entry['fork']} for entry in data if entry['visibility'] == 'public' and entry['fork'] == False]
-        git_repo_forked_lst = [{'repo_name':entry['name'], 'public_url': entry['html_url'], 'is_fork':entry['fork']} for entry in data if entry['visibility'] == 'public' and entry['fork'] == True]
-        git_repo_languages = [entry['language'] for entry in data]
-        git_repo_topics = []
-        git_repo_topics_1 = [git_repo_topics.extend(entry['topics']) for entry in data]
-        rres = {}
-        rres['data']= [{'git_public_repos_unforked':len(git_repo_original_lst), 'git_public_repos_forked':len(git_repo_forked_lst), 'git_watchers_count':sum(git_watchers_count), 'git_repo_languages':list(set(git_repo_languages)),'git_repo_topics':list(set(git_repo_topics))}]
-        return rres
-    else:
-        abort(response.status_code,response.text)
-   
 

@@ -1,5 +1,5 @@
 from app.routes import app
-from app.src.controllers import gitController, bbController
+from app.src.controller import gitController, bbController
 from flask import Flask , jsonify
 import json
 
@@ -11,13 +11,15 @@ def home():
 
 @app.route('/api/git=<reponame>', methods=['GET'])
 def getProfileDataGit(reponame):
-    response = gitController.fetchGitDao.getGitData(reponame)
+    response = gitController.getGithubData(reponame)
     return jsonify(response)
 
 @app.route('/api/bb=<reponame>', methods=['GET'])
 def getProfileDataBitbucket(reponame):
-    response = bbController.fetchBBDao.getBBData(reponame)
+    response = bbController.getBBData(reponame)
     return jsonify(response)
+
+
 
 
 
