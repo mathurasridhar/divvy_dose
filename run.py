@@ -1,5 +1,5 @@
 from app.routes import app
-from app.src.controller import gitController, bbController
+from app.src.controller import gitController, bbController, mergeController
 from flask import Flask , jsonify
 import json
 
@@ -22,11 +22,7 @@ def getProfileDataBitbucket(reponame):
 
 @app.route('/api/git=<gitreponame>&bb=<bbreponame>', methods=['GET'])
 def getMergedDataFromGitBB(gitreponame, bbreponame):
-    git = gitController.getGithubData(gitreponame)
-    bb = bbController.getBBData(bbreponame)
-    response = {}
-    response['data'] = [{'githubstats':[git], 'bb_stats':bb}]
-    return response
-
+    response = mergeController.getMergedData(gitreponame, bbreponame)
+    return jsonify(response)
 if __name__ == '__main__':
     app.run(debug=True)

@@ -4,6 +4,7 @@ import pytest
 import requests
 from app.src.controller.gitController import getGithubData
 from app.src.controller.bbController import getBBData
+from app.src.controller.mergeController import getMergedData
 
 @pytest.mark.parametrize("reponame", [("mailchimp")])
 def test_giturlsuccesspayloadcheck(reponame):
@@ -39,4 +40,11 @@ def test_bburlerrorpayloadcheck(reponame):
     rlist = list(result.keys())
     assert rlist == ['unforked_public_repos', 'forked_public_repos', 'languages', 'topics', 'watchers']
 
+@pytest.mark.parametrize("reponame, bbrepo", [("mailchimp", "mailchimp")])
+def test_mergepayloadcheck(reponame, bbrepo):
+    res = getMergedData(reponame, bbrepo)
+    assert len(res['data']) == 2
 
+
+
+    

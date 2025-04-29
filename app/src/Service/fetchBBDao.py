@@ -47,7 +47,8 @@ class BitbucketService:
             pm.repotopics = []
             return pm
         else:
-            logging.error(response)
+            logging.e(response)
             abort(response.status_code, response.text)
    
 
+  
