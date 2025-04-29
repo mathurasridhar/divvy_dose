@@ -22,9 +22,10 @@ def test_bburlsuccesspayloadcheck(reponame):
     assert rlist == ['unforked_public_repos', 'forked_public_repos', 'languages', 'topics', 'watchers']
 
 
+
 @pytest.mark.parametrize("reponame", [("mailchi")])
 def test_giturlerrorpayloadcheck(reponame):
-    res = getBBData(reponame)
+    res = getGithubData(reponame)
     result = res['data']
     result = result[0]
     rlist = list(result.keys())
@@ -37,3 +38,5 @@ def test_bburlerrorpayloadcheck(reponame):
     result = result[0]
     rlist = list(result.keys())
     assert rlist == ['unforked_public_repos', 'forked_public_repos', 'languages', 'topics', 'watchers']
+
+
