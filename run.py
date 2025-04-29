@@ -9,8 +9,8 @@ app = Flask(__name__)
 def home():
     return '<h1>Flask Rest API</h1>'
 
-@app.route('/api/git=<reponame>&bitbucket=<bbrepo>', methods=['GET'])
-def getProfileData(reponame, bbrepo):
+@app.route('/api/git=<reponame>', methods=['GET'])
+def getProfileData(reponame):
     response = gitController.fetchGitDao.getGitData(reponame)
     return jsonify(response)
 
