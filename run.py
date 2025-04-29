@@ -20,8 +20,13 @@ def getProfileDataBitbucket(reponame):
     return jsonify(response)
 
 
-
-
+@app.route('/api/git-=<gitreponame>&bb=<bbreponame>', methods=['GET'])
+def getMergedDataFromGitBB(gitreponame, bbreponame):
+    git = gitController.getGithubData(gitreponame)
+    bb = bbController.getBBData(bbreponame)
+    response = {}
+    response['data'] = [{'githubstats':[git], 'bb_stats':bb}]
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -15,7 +15,7 @@ class GitHubService:
 
     def getGitData(self):
         api_url = os.environ.get('GITHUB_API_URL')
-        url_git ='https://api.github.com/orgs/'+self.reponame + '/repos'
+        url_git = api_url+self.reponame + '/repos'
         pm = Profile()
         response = requests.get(url_git)
         data = response.json()
