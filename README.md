@@ -38,5 +38,3 @@ http://127.0.0.1:5000/api/git=mailchi, http://127.0.0.1:5000/api/bb=mailchi, htt
 curl -i "http://127.0.0.1:5000/health-check"
 ```
 
-
-## What'd I'd like to improve on...
