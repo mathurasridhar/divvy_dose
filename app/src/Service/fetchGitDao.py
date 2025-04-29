@@ -8,7 +8,7 @@ from pathlib import Path
 from app.src.model.profile_model import Profile
 
 load_dotenv()
-
+logging.basicConfig(filename='app/app.log', level=logging.DEBUG, format='%(asctime)s-%(levelname)s-%(message)s')
 class GitHubService:
     def __init__(self, reponame):
         self.reponame = reponame
@@ -16,10 +16,12 @@ class GitHubService:
     def getGitData(self):
         api_url = os.environ.get('GITHUB_API_URL')
         url_git = api_url+self.reponame + '/repos'
+        logging.info('GitHub API URL:', url_git)
         pm = Profile()
         response = requests.get(url_git)
         data = response.json()
         print('Data:', data)
+        logging.info(data)
         if response.status_code == 200:
             pm.languages = []
             
@@ -33,6 +35,7 @@ class GitHubService:
             pm.repotopics = git_repo_topics
             return pm
         else:
+            logging.error(response)
             abort(response.status_code,response.text)
     
 

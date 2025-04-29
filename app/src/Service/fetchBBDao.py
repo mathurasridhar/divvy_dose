@@ -6,14 +6,17 @@ import logging
 import requests
 from app.src.model.profile_model import Profile
 load_dotenv()
+logging.basicConfig(filename='app/app.log', level=logging.DEBUG, format='%(asctime)s-%(levelname)s-%(message)s')
 class BitbucketService:
     def __init__(self, reponame):
         self.reponame = reponame
     def getBBData(self):
         api_url = os.environ.get('BITBUCKET_API_URL')
         url_bitbucket = api_url +"/"+ self.reponame
+        logging.info('Bitbucket API URL:',url_bitbucket)
         response = requests.get(url_bitbucket)
         pm = Profile()
+        logging.info(response)
         if response.status_code == 200:
             data = response.json()
             bb_public_repos = data
@@ -44,6 +47,7 @@ class BitbucketService:
             pm.repotopics = []
             return pm
         else:
+            logging.error(response)
             abort(response.status_code, response.text)
    
 
